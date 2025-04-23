@@ -27,9 +27,9 @@
     <section>
       <h2 class="text-2xl font-semibold mb-6">Gallery</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <img src="images/seattle_glimpse.jpg" alt="Photo 1" class="object-cover w-full h-64 rounded shadow">
-        <img src="images/yosemite_1.jpg" alt="Photo 2" class="object-cover w-full h-64 rounded shadow">
-        <img src="images/oregon_1.jpg" alt="Photo 3" class="object-cover w-full h-64 rounded shadow">
+        <img src="images/seattle_glimpse.jpg" alt="Seattle Glimpse" class="lightbox-thumb">
+        <img src="images/yosemite_1.jpg" alt="Yosemite Falls" class="lightbox-thumb">
+        <img src="images/oregon_1.jpg" alt="Oregon Lighthouse" class="lightbox-thumb">
         <!-- Add more <img> tags as needed -->
       </div>
     </section>
@@ -38,6 +38,30 @@
   <footer class="text-center text-sm text-gray-500 py-6 border-t mt-12">
     © 2025 Eric Stratford. All rights reserved.
   </footer>
+
+    <!-- Lightbox container -->
+  <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-90 hidden justify-center items-center z-50">
+    <img id="lightbox-img" class="max-w-full max-h-full rounded shadow-lg">
+  </div>
+  
+  <script>
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const thumbs = document.querySelectorAll('.lightbox-thumb');
+  
+    thumbs.forEach(img => {
+      img.addEventListener('click', () => {
+        lightboxImg.src = img.src;
+        lightbox.classList.remove('hidden');
+      });
+    });
+  
+    lightbox.addEventListener('click', () => {
+      lightbox.classList.add('hidden');
+      lightboxImg.src = '';
+    });
+  </script>
+
 
 </body>
 </html>
