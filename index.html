@@ -91,18 +91,18 @@
 <body class="bg-white text-gray-900">
 
   <div class="max-w-5xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-3 gap-4">
-    <div class="thumb-wrapper"><img src="images/seattle_glimpse.jpg" class="lightbox-thumb" alt="1"></div>
-    <div class="thumb-wrapper"><img src="images/yosemite_1.jpg" class="lightbox-thumb" alt="2"></div>
-    <div class="thumb-wrapper"><img src="images/oregon_1.jpg" class="lightbox-thumb" alt="3"></div>
-    <div class="thumb-wrapper"><img src="images/golden_gate.jpg" class="lightbox-thumb" alt="4"></div>
-    <div class="thumb-wrapper"><img src="images/ob_6.jpg" class="lightbox-thumb" alt="5"></div>
-    <div class="thumb-wrapper"><img src="images/rainier_1.jpg" class="lightbox-thumb" alt="6"></div>
+    <div class="thumb-wrapper"><img src="images/seattle_glimpse.jpg" class="lightbox-thumb" alt="Seattle Glimpse"></div>
+    <div class="thumb-wrapper"><img src="images/yosemite_1.jpg" class="lightbox-thumb" alt="Yosemite"></div>
+    <div class="thumb-wrapper"><img src="images/oregon_1.jpg" class="lightbox-thumb" alt="Oregon"></div>
+    <div class="thumb-wrapper"><img src="images/golden_gate.jpg" class="lightbox-thumb" alt="Golden Gate"></div>
+    <div class="thumb-wrapper"><img src="images/ob_6.jpg" class="lightbox-thumb" alt="Ocean Beach"></div>
+    <div class="thumb-wrapper"><img src="images/rainier_1.jpg" class="lightbox-thumb" alt="Mount Rainier"></div>
   </div>
 
   <div id="lightbox" class="hidden">
     <div class="nav-arrow nav-left" id="prevBtn">&#8592;</div>
     <div class="nav-arrow nav-right" id="nextBtn">&#8594;</div>
-    <div id="lightbox-content">
+    <div id="lightbox-content" onclick="event.stopPropagation()">
       <div class="fullscreen-btn" id="fullscreenBtn">[⛶]</div>
       <img id="lightbox-img" src="" alt="Expanded View">
     </div>
@@ -119,25 +119,22 @@
     let currentIndex = 0;
 
     function showImage(index) {
-      const src = thumbs[index].src;
-      lightboxImg.src = src;
+      currentIndex = index;
+      lightboxImg.src = thumbs[index].src;
       lightbox.classList.remove('hidden');
       lightbox.classList.add('visible');
-      currentIndex = index;
     }
 
     thumbs.forEach((img, i) => {
       img.addEventListener('click', () => showImage(i));
     });
 
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox || e.target === lightboxImg) {
-        lightbox.classList.remove('visible');
-        setTimeout(() => {
-          lightbox.classList.add('hidden');
-          lightboxImg.src = '';
-        }, 300);
-      }
+    lightbox.addEventListener('click', () => {
+      lightbox.classList.remove('visible');
+      setTimeout(() => {
+        lightbox.classList.add('hidden');
+        lightboxImg.src = '';
+      }, 300);
     });
 
     nextBtn.addEventListener('click', (e) => {
@@ -158,6 +155,25 @@
         lightboxImg.requestFullscreen().catch(err => console.error(err));
       } else {
         document.exitFullscreen();
+      }
+    });
+
+    // Swipe support for mobile devices
+    let startX = 0;
+    lightboxImg.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+    });
+
+    lightboxImg.addEventListener('touchend', (e) => {
+      const endX = e.changedTouches[0].clientX;
+      const diffX = startX - endX;
+
+      if (Math.abs(diffX) > 50) {
+        if (diffX > 0) {
+          nextBtn.click();
+        } else {
+          prevBtn.click();
+        }
       }
     });
   </script>
