@@ -1,0 +1,8 @@
+/* Custom styles can go here */
+body {
+  scroll-behavior: smooth;
+}
+img:hover {
+  transform: scale(1.02);
+  transition: transform 0.3s ease-in-out;
+}
