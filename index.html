@@ -52,15 +52,20 @@
     thumbs.forEach(img => {
       img.addEventListener('click', () => {
         lightboxImg.src = img.src;
+        lightbox.classList.add('visible');
         lightbox.classList.remove('hidden');
       });
     });
   
     lightbox.addEventListener('click', () => {
-      lightbox.classList.add('hidden');
-      lightboxImg.src = '';
+      lightbox.classList.remove('visible');
+      setTimeout(() => {
+        lightbox.classList.add('hidden');
+        lightboxImg.src = '';
+      }, 300); // delay to allow animation to finish
     });
   </script>
+
 
 
 </body>
