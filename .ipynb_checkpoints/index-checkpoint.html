@@ -1,75 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Eric Stratford | Photography</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP Photography Showcase</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="esp_favicon.png" type="image/png">
-
+  <style>
+    .thumb-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 100%;
+      overflow: hidden;
+      border-radius: 6px;
+      background-color: #f0f0f0;
+    }
+    .lightbox-thumb {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+    .lightbox-thumb:hover {
+      transform: scale(1.02);
+    }
+    #lightbox {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(6px);
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    #lightbox.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #lightbox-content {
+      position: relative;
+      background: white;
+      padding: 1rem;
+      border-radius: 12px;
+      max-width: 90%;
+      max-height: 90%;
+      animation: popin 0.3s ease;
+    }
+    #lightbox-img {
+      max-width: 100%;
+      max-height: 80vh;
+      border-radius: 8px;
+    }
+    .fullscreen-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2rem;
+      color: white;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 0.5rem;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 51;
+    }
+    .nav-left { left: 20px; }
+    .nav-right { right: 20px; }
+    @keyframes popin {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
 </head>
 <body class="bg-white text-gray-900">
 
-  <header class="text-center py-8 border-b">
-    <h1 class="text-4xl font-bold">Eric Stratford</h1>
-    <p class="text-gray-500">Photography Portfolio</p>
-  </header>
-
-  <main class="px-4 py-8 max-w-5xl mx-auto">
-    <section class="mb-12">
-      <h2 class="text-2xl font-semibold mb-4">About Me</h2>
-      <p class="text-lg leading-relaxed">
-        I'm a photographer with a passion for capturing stories through the lens. Whether it's nature, portraits, or urban scenes, I strive to bring emotion and energy to every shot.
-      </p>
-    </section>
-
-    <section>
-      <h2 class="text-2xl font-semibold mb-6">Gallery</h2>
-      <div class="thumb-wrapper">
-        <img src="images/seattle_glimpse.jpg" alt="Seattle Glimpse" class="lightbox-thumb">
-      </div>
-      <div class="thumb-wrapper">
-        <img src="images/yosemite_1.jpg" alt="Yosemite Falls" class="lightbox-thumb">
-      </div>
-      <div class="thumb-wrapper">
-        <img src="images/oregon_1.jpg" alt="Oregon Lighthouse" class="lightbox-thumb">
-      </div>
-    </section>
-  </main>
-
-  <footer class="text-center text-sm text-gray-500 py-6 border-t mt-12">
-    © 2025 Eric Stratford. All rights reserved.
-  </footer>
-
-    <!-- Lightbox container -->
-  <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-90 hidden justify-center items-center z-50">
-    <img id="lightbox-img" class="max-w-full max-h-full rounded shadow-lg">
+  <div class="max-w-5xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-3 gap-4">
+    <div class="thumb-wrapper"><img src="images/seattle_glimpse.jpg" class="lightbox-thumb" alt="1"></div>
+    <div class="thumb-wrapper"><img src="images/yosemite_1.jpg" class="lightbox-thumb" alt="2"></div>
+    <div class="thumb-wrapper"><img src="images/oregon_1.jpg" class="lightbox-thumb" alt="3"></div>
+    <div class="thumb-wrapper"><img src="images/golden_gate.jpg" class="lightbox-thumb" alt="4"></div>
+    <div class="thumb-wrapper"><img src="images/ob_6.jpg" class="lightbox-thumb" alt="5"></div>
+    <div class="thumb-wrapper"><img src="images/rainier_1.jpg" class="lightbox-thumb" alt="6"></div>
   </div>
-  
+
+  <div id="lightbox" class="hidden">
+    <div class="nav-arrow nav-left" id="prevBtn">&#8592;</div>
+    <div class="nav-arrow nav-right" id="nextBtn">&#8594;</div>
+    <div id="lightbox-content">
+      <div class="fullscreen-btn" id="fullscreenBtn">[⛶]</div>
+      <img id="lightbox-img" src="" alt="Expanded View">
+    </div>
+  </div>
+
   <script>
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const thumbs = document.querySelectorAll('.lightbox-thumb');
-  
-    thumbs.forEach(img => {
-      img.addEventListener('click', () => {
-        lightboxImg.src = img.src;
-        lightbox.classList.add('visible');
-        lightbox.classList.remove('hidden');
-      });
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+
+    let currentIndex = 0;
+
+    function showImage(index) {
+      const src = thumbs[index].src;
+      lightboxImg.src = src;
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('visible');
+      currentIndex = index;
+    }
+
+    thumbs.forEach((img, i) => {
+      img.addEventListener('click', () => showImage(i));
     });
-  
-    lightbox.addEventListener('click', () => {
-      lightbox.classList.remove('visible');
-      setTimeout(() => {
-        lightbox.classList.add('hidden');
-        lightboxImg.src = '';
-      }, 300); // delay to allow animation to finish
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox || e.target === lightboxImg) {
+        lightbox.classList.remove('visible');
+        setTimeout(() => {
+          lightbox.classList.add('hidden');
+          lightboxImg.src = '';
+        }, 300);
+      }
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentIndex = (currentIndex + 1) % thumbs.length;
+      showImage(currentIndex);
+    });
+
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentIndex = (currentIndex - 1 + thumbs.length) % thumbs.length;
+      showImage(currentIndex);
+    });
+
+    fullscreenBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!document.fullscreenElement) {
+        lightboxImg.requestFullscreen().catch(err => console.error(err));
+      } else {
+        document.exitFullscreen();
+      }
     });
   </script>
-
-
 
 </body>
 </html>
