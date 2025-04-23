@@ -57,6 +57,22 @@
       max-width: 100%;
       max-height: 80vh;
       border-radius: 8px;
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
+    #lightbox-img.loaded {
+      opacity: 1;
+    }
+    #closeBtn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 52;
     }
     .fullscreen-btn {
       position: absolute;
@@ -103,6 +119,7 @@
     <div class="nav-arrow nav-left" id="prevBtn">&#8592;</div>
     <div class="nav-arrow nav-right" id="nextBtn">&#8594;</div>
     <div id="lightbox-content" onclick="event.stopPropagation()">
+      <div id="closeBtn">&#10005;</div>
       <div class="fullscreen-btn" id="fullscreenBtn">[⛶]</div>
       <img id="lightbox-img" src="" alt="Expanded View">
     </div>
@@ -115,21 +132,37 @@
     const fullscreenBtn = document.getElementById('fullscreenBtn');
     const nextBtn = document.getElementById('nextBtn');
     const prevBtn = document.getElementById('prevBtn');
+    const closeBtn = document.getElementById('closeBtn');
 
     let currentIndex = 0;
 
     function showImage(index) {
       currentIndex = index;
+      lightboxImg.classList.remove('loaded');
       lightboxImg.src = thumbs[index].src;
       lightbox.classList.remove('hidden');
       lightbox.classList.add('visible');
     }
 
+    lightboxImg.onload = () => {
+      lightboxImg.classList.add('loaded');
+    };
+
     thumbs.forEach((img, i) => {
+      img.setAttribute('loading', 'lazy');
       img.addEventListener('click', () => showImage(i));
     });
 
     lightbox.addEventListener('click', () => {
+      lightbox.classList.remove('visible');
+      setTimeout(() => {
+        lightbox.classList.add('hidden');
+        lightboxImg.src = '';
+      }, 300);
+    });
+
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       lightbox.classList.remove('visible');
       setTimeout(() => {
         lightbox.classList.add('hidden');
@@ -174,6 +207,18 @@
         } else {
           prevBtn.click();
         }
+      }
+    });
+
+    // Keyboard navigation support
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('visible')) return;
+      if (e.key === 'ArrowRight') {
+        nextBtn.click();
+      } else if (e.key === 'ArrowLeft') {
+        prevBtn.click();
+      } else if (e.key === 'Escape') {
+        lightbox.click();
       }
     });
   </script>
