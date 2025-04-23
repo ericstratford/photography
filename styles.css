@@ -35,25 +35,25 @@ img:hover {
 }
 
 /* Gallery thumbnails (square preview) */
-/* .thumb-wrapper {
+.thumb-wrapper {
   position: relative;
   width: 100%;
   padding-top: 100%;
   overflow: hidden;
   border-radius: 6px;
   background-color: #f0f0f0;
-} */
+}
 
-.lightbox-thumb {
+/* .lightbox-thumb {
   aspect-ratio: 1 / 1;
   object-fit: cover;
   height: 200px;
   width: 100%;
   border-radius: 6px;
   transition: transform 0.3s ease;
-}
+} */
 
-/* .lightbox-thumb {
+.lightbox-thumb {
   position: absolute;
   top: 0;
   left: 0;
@@ -62,7 +62,7 @@ img:hover {
   object-fit: cover;
   transition: transform 0.3s ease;
   cursor: pointer;
-} */
+}
 
 .lightbox-thumb:hover {
   transform: scale(1.02);
